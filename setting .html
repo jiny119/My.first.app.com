@@ -3,79 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - MyTaskVita</title>
-    <link rel="stylesheet" href="settings-style.css">
-    <script type="module" src="firebase-config.js"></script>
+    <title>Settings</title>
+    <link rel="stylesheet" href="settings.css">
 </head>
 <body>
-    <header>
-        <h1>Settings</h1>
-    </header>
 
-    <main>
-        <h3>Customize Your Experience</h3>
+    <div class="container">
+        <h2>Settings</h2>
+        
+        <label for="username">Change Username:</label>
+        <input type="text" id="username" placeholder="Enter new username">
+        
+        <label for="email">Change Email:</label>
+        <input type="email" id="email" placeholder="Enter new email">
 
-        <label>🔊 Sound:</label>
-        <button id="toggleSound">ON</button>
+        <label for="password">Change Password:</label>
+        <input type="password" id="password" placeholder="Enter new password">
 
-        <label>🌙 Theme:</label>
-        <button id="toggleTheme">Light Mode</button>
+        <button onclick="saveSettings()">Save Changes</button>
+        <p id="message" class="hidden"></p>
+        
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
 
-        <label>🌍 Language:</label>
-        <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="ur">Urdu</option>
-            <option value="hi">Hindi</option>
-        </select>
-
-        <label>🔔 Notifications:</label>
-        <button id="toggleNotifications">ON</button>
-
-        <button id="logout">🚪 Logout</button>
-    </main>
-
-    <script type="module">
-        import { auth } from "./firebase-config.js";
-        import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-        // Sound Toggle
-        document.getElementById("toggleSound").addEventListener("click", function() {
-            let soundState = this.innerText === "ON" ? "OFF" : "ON";
-            this.innerText = soundState;
-            alert("Sound " + soundState);
-        });
-
-        // Theme Toggle
-        document.getElementById("toggleTheme").addEventListener("click", function() {
-            if (document.body.classList.contains("dark-mode")) {
-                document.body.classList.remove("dark-mode");
-                this.innerText = "Light Mode";
-            } else {
-                document.body.classList.add("dark-mode");
-                this.innerText = "Dark Mode";
-            }
-        });
-
-        // Language Change
-        document.getElementById("languageSelect").addEventListener("change", function() {
-            alert("Language changed to: " + this.value);
-        });
-
-        // Notifications Toggle
-        document.getElementById("toggleNotifications").addEventListener("click", function() {
-            let notifyState = this.innerText === "ON" ? "OFF" : "ON";
-            this.innerText = notifyState;
-            alert("Notifications " + notifyState);
-        });
-
-        // Logout Function
-        document.getElementById("logout").addEventListener("click", function() {
-            signOut(auth).then(() => {
-                alert("Logged out!");
-                window.location.href = "login.html";
-            });
-        });
-
-    </script>
+    <script src="settings.js"></script>
 </body>
 </html>
