@@ -3,61 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTaskVita - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="auth.js"></script>
+    <title>My Web App</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        .hidden { display: none; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
 </head>
 <body>
-    <header>
-        <button id="menu-btn">☰</button>
-        <h1>MyTaskVita</h1>
-    </header>
 
-    <nav id="sidebar">
-        <ul>
-            <li><a href="withdrawal.html">💰 Withdrawal</a></li>
-            <li><a href="referral.html">🔗 Referral</a></li>
-            <li><a href="settings.html">⚙️ Settings</a></li>
-            <li><a href="#" onclick="logoutUser()">🚪 Logout</a></li>
-        </ul>
-    </nav>
+    <h2>My Web App</h2>
 
-    <main>
-        <h2>Complete Tasks & Earn Coins</h2>
-        <div class="tasks">
-            <button onclick="startGame()">🎮 Play Game (5 Coins)</button>
-            <button onclick="watchAd()">📺 Watch Ad (5 Coins)</button>
-            <button onclick="startSurvey()">📋 Take Survey (20 Coins)</button>
-            <button onclick="installApp()">📱 Install App (5 Coins)</button>
-        </div>
-    </main>
+    <div id="signup" class="container">
+        <h3>Sign Up</h3>
+        <input type="text" id="signupName" placeholder="Full Name" required>
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required>
+        <button onclick="signUp()">Sign Up</button>
+        <p id="signupMsg"></p>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
+
+    <div id="login" class="container hidden">
+        <h3>Login</h3>
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+        <p id="loginMsg"></p>
+        <p>Don't have an account? <a href="#" onclick="showSignUp()">Sign Up</a></p>
+    </div>
+
+    <div id="dashboard" class="container hidden">
+        <h3>Welcome, <span id="userName"></span>!</h3>
+        <p>You have <strong id="coins">20000</strong> coins.</p>
+        <button onclick="logout()">Logout</button>
+        <button onclick="showWithdraw()">Withdraw</button>
+    </div>
+
+    <div id="withdraw" class="container hidden">
+        <h3>Withdrawal</h3>
+        <p>You have <strong id="withdrawCoins">20000</strong> coins.</p>
+        <select id="withdrawMethod" required>
+            <option value="">Select Method</option>
+            <option value="JazzCash">JazzCash</option>
+            <option value="EasyPaisa">EasyPaisa</option>
+            <option value="Payoneer">Payoneer</option>
+            <option value="PayPal">PayPal</option>
+        </select>
+        <input type="number" id="withdrawAmount" placeholder="Amount in PKR" required>
+        <button onclick="withdraw()">Withdraw</button>
+        <p id="withdrawMsg"></p>
+        <button onclick="backToDashboard()">Back</button>
+    </div>
 
     <script>
-        function startGame() {
-            window.location.href = "https://www.crazygames.com/game/tunnel-rush"; // Replace with game URL
+        function showLogin() {
+            document.getElementById("signup").classList.add("hidden");
+            document.getElementById("login").classList.remove("hidden");
         }
 
-        function watchAd() {
-            alert("Ad is playing... (This will be replaced with actual AdSense ads)");
+        function showSignUp() {
+            document.getElementById("login").classList.add("hidden");
+            document.getElementById("signup").classList.remove("hidden");
         }
 
-        function startSurvey() {
-            window.open("https://www.youtube.com/@ToonCraftStudio-f7o", "_blank");
+        function showDashboard() {
+            document.getElementById("login").classList.add("hidden");
+            document.getElementById("dashboard").classList.remove("hidden");
+            document.getElementById("userName").innerText = localStorage.getItem("name");
         }
 
-        function installApp() {
-            alert("App install feature coming soon!");
+        function showWithdraw() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("withdraw").classList.remove("hidden");
         }
 
-        document.getElementById("menu-btn").addEventListener("click", function () {
-            document.getElementById("sidebar").classList.toggle("active");
-        });
+        function backToDashboard() {
+            document.getElementById("withdraw").classList.add("hidden");
+            document.getElementById("dashboard").classList.remove("hidden");
+        }
 
-        function logoutUser() {
-            alert("Logged out!");
-            window.location.href = "login.html";
+        function signUp() {
+            let name = document.getElementById("signupName").value;
+            let email = document.getElementById("signupEmail").value;
+            let password = document.getElementById("signupPassword").value;
+
+            if (!name || !email || !password) {
+                document.getElementById("signupMsg").innerHTML = "❌ All fields are required!";
+                return;
+            }
+
+            localStorage.setItem("name", name);
+            localStorage.setItem("email", email);
+            localStorage.setItem("password", password);
+            localStorage.setItem("coins", 20000);
+
+            document.getElementById("signupMsg").innerHTML = "✅ Sign Up Successful! Please Login.";
+        }
+
+        function login() {
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+
+            let storedEmail = localStorage.getItem("email");
+            let storedPassword = localStorage.getItem("password");
+
+            if (email === storedEmail && password === storedPassword) {
+                showDashboard();
+            } else {
+                document.getElementById("loginMsg").innerHTML = "❌ Invalid Email or Password!";
+            }
+        }
+
+        function logout() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("login").classList.remove("hidden");
+        }
+
+        function withdraw() {
+            let coins = parseInt(localStorage.getItem("coins"));
+            let amount = parseInt(document.getElementById("withdrawAmount").value);
+            let method = document.getElementById("withdrawMethod").value;
+            let msg = document.getElementById("withdrawMsg");
+
+            if (coins < 15000) {
+                msg.innerHTML = "❌ You need at least 15,000 coins!";
+                msg.className = "error";
+                return;
+            }
+
+            if (!amount || amount <= 0 || !method) {
+                msg.innerHTML = "❌ Enter valid amount and method!";
+                msg.className = "error";
+                return;
+            }
+
+            if (amount > coins) {
+                msg.innerHTML = "❌ Insufficient coins!";
+                msg.className = "error";
+                return;
+            }
+
+            localStorage.setItem("coins", coins - amount);
+            document.getElementById("coins").innerText = localStorage.getItem("coins");
+            document.getElementById("withdrawCoins").innerText = localStorage.getItem("coins");
+
+            msg.innerHTML = "✅ Withdrawal Successful!";
+            msg.className = "success";
         }
     </script>
+
 </body>
 </html>
