@@ -1,43 +1,102 @@
-// Import Firebase Modules
-import { auth, database } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-// Auto Generate Page Description
-document.head.innerHTML += `<meta name="description" content="Earn coins by completing tasks like watching ads, playing games, installing apps, and surveys. Withdraw via JazzCash, EasyPaisa, PayPal, Payoneer.">`;
-
-// Sidebar Menu Toggle
-document.getElementById("menu-btn").addEventListener("click", function () {
-    document.getElementById("sidebar").classList.toggle("active");
-});
-
-// Function to Start Game
-function startGame() {
-    window.location.href = "https://www.crazygames.com/game/tunnel-rush"; // Change to a good game
+// Show & Hide Sections
+function showLogin() {
+    document.getElementById("signup").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
 }
 
-// Function to Watch Ad
-function watchAd() {
-    alert("Ad is playing... (This will be replaced with actual AdSense ads)");
+function showSignUp() {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("signup").classList.remove("hidden");
 }
 
-// Function to Start Survey
-function startSurvey() {
-    window.open("https://www.youtube.com/@ToonCraftStudio-f7o", "_blank");
+function showDashboard() {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    document.getElementById("userName").innerText = localStorage.getItem("name");
+    document.getElementById("coins").innerText = localStorage.getItem("coins");
 }
 
-// Function to Install App
-function installApp() {
-    alert("App install feature coming soon!");
+function showWithdraw() {
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("withdraw").classList.remove("hidden");
+    document.getElementById("withdrawCoins").innerText = localStorage.getItem("coins");
 }
 
-// Function to Logout User
-function logoutUser() {
-    signOut(auth).then(() => {
-        alert("Logged out!");
-        window.location.href = "login.html";
-    });
+function backToDashboard() {
+    document.getElementById("withdraw").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
 }
 
-// Add Blogger Link in Footer
-document.body.innerHTML += `<footer><p>Visit our Blog: <a href="https://tooncraft-earning.blogspot.com" target="_blank">ToonCraft Earning</a></p></footer>`;
+// Sign Up Function
+function signUp() {
+    let name = document.getElementById("signupName").value;
+    let email = document.getElementById("signupEmail").value;
+    let password = document.getElementById("signupPassword").value;
+    let msg = document.getElementById("signupMsg");
+
+    if (!name || !email || !password) {
+        msg.innerHTML = "❌ All fields are required!";
+        return;
+    }
+
+    localStorage.setItem("name", name);
+    localStorage.setItem("email", email);
+    localStorage.setItem("password", password);
+    localStorage.setItem("coins", 20000);  // Initial Coins
+
+    msg.innerHTML = "✅ Sign Up Successful! Please Login.";
+}
+
+// Login Function
+function login() {
+    let email = document.getElementById("loginEmail").value;
+    let password = document.getElementById("loginPassword").value;
+    let storedEmail = localStorage.getItem("email");
+    let storedPassword = localStorage.getItem("password");
+    let msg = document.getElementById("loginMsg");
+
+    if (email === storedEmail && password === storedPassword) {
+        showDashboard();
+    } else {
+        msg.innerHTML = "❌ Invalid Email or Password!";
+    }
+}
+
+// Logout Function
+function logout() {
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
+}
+
+// Withdrawal Function
+function withdraw() {
+    let coins = parseInt(localStorage.getItem("coins"));
+    let amount = parseInt(document.getElementById("withdrawAmount").value);
+    let method = document.getElementById("withdrawMethod").value;
+    let msg = document.getElementById("withdrawMsg");
+
+    if (coins < 15000) {
+        msg.innerHTML = "❌ You need at least 15,000 coins!";
+        msg.className = "error";
+        return;
+    }
+
+    if (!amount || amount <= 0 || !method) {
+        msg.innerHTML = "❌ Enter valid amount and method!";
+        msg.className = "error";
+        return;
+    }
+
+    if (amount > coins) {
+        msg.innerHTML = "❌ Insufficient coins!";
+        msg.className = "error";
+        return;
+    }
+
+    localStorage.setItem("coins", coins - amount);
+    document.getElementById("coins").innerText = localStorage.getItem("coins");
+    document.getElementById("withdrawCoins").innerText = localStorage.getItem("coins");
+
+    msg.innerHTML = "✅ Withdrawal Successful!";
+    msg.className = "success";
+        }
