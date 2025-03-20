@@ -1,34 +1,23 @@
-/* === Settings Page Styling === */
-body {
-    background: linear-gradient(to right, #2c3e50, #34495e);
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
+// Function to Save Settings
+function saveSettings() {
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let message = document.getElementById("message");
+
+    // Save in Local Storage
+    localStorage.setItem("username", username);
+    localStorage.setItem("email", email);
+    localStorage.setItem("password", password);
+
+    // Show Success Message
+    message.innerText = "Settings saved successfully!";
+    message.classList.remove("hidden");
+    message.classList.add("success");
 }
 
-header h1 {
-    background: #1abc9c;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-button, select {
-    background: #ff9800;
-    color: white;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    margin: 10px;
-    border-radius: 5px;
-}
-
-button:hover {
-    background: #e68900;
-}
-
-/* === Dark Mode === */
-.dark-mode {
-    background: linear-gradient(to right, #000428, #004e92);
+// Function to Logout
+function logout() {
+    alert("You have been logged out!");
+    window.location.href = "index.html";  // Redirect to Login Page
 }
